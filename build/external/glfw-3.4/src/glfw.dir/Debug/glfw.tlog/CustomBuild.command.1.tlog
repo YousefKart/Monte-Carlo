@@ -1,0 +1,10 @@
+^C:\USERS\BROSE\DOCUMENTS\GITHUB\MONTE-CARLO\EXTERNAL\GLFW-3.4\SRC\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Brose/Documents/GitHub/Monte-Carlo -BC:/Users/Brose/Documents/GitHub/Monte-Carlo/build --check-stamp-file C:/Users/Brose/Documents/GitHub/Monte-Carlo/build/external/glfw-3.4/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

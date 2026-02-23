@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Brose\Documents\GitHub\Monte-Carlo\build\CMakeFiles\225de463eddf84470d7d4819acace1d8\update_mappings.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Brose\Documents\GitHub\Monte-Carlo\external\glfw-3.4\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Brose\Documents\GitHub\Monte-Carlo\external\glfw-3.4\src\mappings.h.in">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="C:\Users\Brose\Documents\GitHub\Monte-Carlo\external\glfw-3.4\CMake\GenerateMappings.cmake" />
+    <None Include="C:\Users\Brose\Documents\GitHub\Monte-Carlo\build\external\glfw-3.4\src\CMakeFiles\update_mappings" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{CD8B74DD-26B1-37F4-AE68-88D53D3DB067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6A892917-9C94-364E-BA3B-BFBD660B9F73}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
