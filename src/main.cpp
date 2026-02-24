@@ -6,14 +6,26 @@
 constexpr int SAMPLES = 1000000;
 
 int main() {
-    Functions mathEngine;
-    double Z, avg {0};
-
-    for (int i = 0; i < SAMPLES; i++) {
-        Z = mathEngine.generateStandardNormal();
-        avg += mathEngine.computeST(100, 0.05, 0.0, 0.1, 1.0, Z) / SAMPLES;
+    if (!glfwInit()) {
+        exit(-1);
     }
 
-    std::cout << avg << std::endl;
-    return 0;
+    GLFWwindow* window = glfwCreateWindow(640, 480, "Monte Carlo Engine", NULL, NULL);
+    if (!window) {
+        glfwTerminate();
+        exit(-1);
+    }
+
+    glfwMakeContextCurrent(window);
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        exit(-1);
+    }
+
+    while (!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT);
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
 }
