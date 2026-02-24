@@ -10,6 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Add Executable
 add_executable(MonteCarlo
     src/main.cpp
+    src/engine/functions.cpp
 )
 
 # Project Include Directory (your own headers)
