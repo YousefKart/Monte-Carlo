@@ -8,9 +8,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(MonteCarlo
     src/main.cpp
+
     src/core/application.cpp
     src/core/renderer.cpp
+
     src/engine/functions.cpp
+    src/engine/generator.cpp
     
     src/gui/primitives/line.cpp
     src/gui/primitives/polyline.cpp
