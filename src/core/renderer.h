@@ -1,12 +1,16 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "../gui/primitives/line.h"
+#include "../gui/primitives/polyline.h"
+
 class Renderer {
 public:
     Renderer();
     ~Renderer();
 
-    void drawLine(float x1, float y1, float x2, float y2);
+    void drawLine(const Line& line);
+    void drawPolyline(const Polyline& Polyline);
 
 private:
 unsigned int m_VAO;

@@ -11,6 +11,9 @@ add_executable(MonteCarlo
     src/core/application.cpp
     src/core/renderer.cpp
     src/engine/functions.cpp
+    
+    src/gui/primitives/line.cpp
+    src/gui/primitives/polyline.cpp
 )
 
 target_include_directories(MonteCarlo PRIVATE

@@ -25,13 +25,22 @@ Application::~Application() {
 void Application::run() {
 
     Renderer renderer;
+    
+    Line line(0.0, -0.5, 0.0, 0.5);
+
+    Polyline polyline;
+    polyline.addPoint(-0.5, 0.5);
+    polyline.addPoint(-0.25, -0.25);
+    polyline.addPoint(0.25, 0.25);
+    polyline.addPoint(0.5, -0.5);
 
     while (!glfwWindowShouldClose(m_window)) {
 
-        glClearColor(0,0,0,1);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        renderer.drawLine(-0.5f, -0.5f, 0.5f, 0.5f);
+        renderer.drawLine(line);
+        renderer.drawPolyline(polyline);
 
         glfwSwapBuffers(m_window);
         glfwPollEvents();

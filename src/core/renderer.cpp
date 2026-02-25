@@ -33,6 +33,15 @@ Renderer::Renderer()
 
     glGenVertexArrays(1, &m_VAO);
     glGenBuffers(1, &m_VBO);
+
+    glBindVertexArray(m_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 Renderer::~Renderer()
@@ -42,17 +51,24 @@ Renderer::~Renderer()
     glDeleteProgram(m_shader);
 }
 
-void Renderer::drawLine(float x1, float y1, float x2, float y2)
+void Renderer::drawLine(const Line& line)
 {
-    float vertices[] = { x1, y1, x2, y2 };
-
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
-    glEnableVertexAttribArray(0);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4, line.vertices(), GL_DYNAMIC_DRAW);
 
     glUseProgram(m_shader);
     glDrawArrays(GL_LINES, 0, 2);
+}
+
+void Renderer::drawPolyline(const Polyline& polyline)
+{
+    size_t count = polyline.pointCount();
+
+    glBindVertexArray(m_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * count * 2, polyline.vertices(), GL_DYNAMIC_DRAW);
+
+    glUseProgram(m_shader);
+    glDrawArrays(GL_LINE_STRIP, 0, count);
 }
