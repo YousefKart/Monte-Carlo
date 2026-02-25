@@ -4,6 +4,12 @@
     <ClCompile Include="C:\Users\Brose\Documents\GitHub\Monte-Carlo\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\Brose\Documents\GitHub\Monte-Carlo\src\core\application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Brose\Documents\GitHub\Monte-Carlo\src\core\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\Brose\Documents\GitHub\Monte-Carlo\src\engine\functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
