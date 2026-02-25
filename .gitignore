@@ -11,7 +11,7 @@ compile_commands.json
 Makefile
 
 # Visual Studio
-.vs/
+.vscode/
 *.vcxproj*
 *.sln
 
