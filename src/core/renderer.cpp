@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include <glad/glad.h>
+#include <cassert>
 
 static const char* vertexSrc = R"(
 #version 330 core
@@ -9,8 +10,9 @@ void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
 
 static const char* fragmentSrc = R"(
 #version 330 core
+uniform vec4 u_Color;
 out vec4 FragColor;
-void main() { FragColor = vec4(1,1,1,1); }
+void main() { FragColor = u_Color; }
 )";
 
 Renderer::Renderer()
@@ -27,6 +29,9 @@ Renderer::Renderer()
     glAttachShader(m_shader, vs);
     glAttachShader(m_shader, fs);
     glLinkProgram(m_shader);
+
+    m_colorLocation = glGetUniformLocation(m_shader, "u_Color");
+    assert(m_colorLocation >= 0);
 
     glDeleteShader(vs);
     glDeleteShader(fs);
@@ -55,7 +60,7 @@ void Renderer::drawLine(const Line& line)
 {
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4, line.vertices(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2<float>) * 2, line.vertices(), GL_DYNAMIC_DRAW);
 
     glUseProgram(m_shader);
     glDrawArrays(GL_LINES, 0, 2);
@@ -67,8 +72,9 @@ void Renderer::drawPolyline(const Polyline& polyline)
 
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * count * 2, polyline.vertices(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2<float>) * count, polyline.vertices(), GL_DYNAMIC_DRAW);
 
     glUseProgram(m_shader);
+    glUniform4f(m_colorLocation, polyline.color().r, polyline.color().g, polyline.color().b, polyline.color().a);
     glDrawArrays(GL_LINE_STRIP, 0, count);
 }

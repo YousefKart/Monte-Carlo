@@ -13,9 +13,10 @@ public:
     void drawPolyline(const Polyline& Polyline);
 
 private:
-unsigned int m_VAO;
-unsigned int m_VBO;
-unsigned int m_shader;
+    unsigned int m_VAO;
+    unsigned int m_VBO;
+    unsigned int m_shader;
+    int m_colorLocation;
 };
 
 #endif // RENDERER_H
