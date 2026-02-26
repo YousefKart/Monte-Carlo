@@ -12,7 +12,8 @@ public:
     void addPoint(float x, float y);
     void setColor(const Vec4<float>& color) { m_color = color; };
 
-    const Vec2<float>* vertices() const { return m_vertices.data(); }
+    const std::vector<Vec2<float>>& vertices() const { return m_vertices; }
+    std::vector<Vec2<float>>& vertices() { return m_vertices; }
     size_t pointCount() const { return m_pointCount; }
     const Vec4<float>& color() const { return m_color; }
 

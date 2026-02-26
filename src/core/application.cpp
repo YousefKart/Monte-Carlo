@@ -27,11 +27,19 @@ void Application::run() {
 
     Renderer renderer;
     Generator generator;
-    Polyline polylines[5];
+    Polyline polylines[50];
+
+    float min = generator.generateMin();
+    float max = generator.generateMax();
     
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 50; i++) {
         polylines[i] = generator.generatePolyline();
-        polylines[i].setColor(Vec4(0.1f * i, 0.25f * i, 0.5f, 1.0f));
+        polylines[i].setColor(Vec4(0.01f * i, 0.025f * i, 0.5f, 0.6f));
+        
+        for (auto& v : polylines[i].vertices()) {
+            v.x = 2.0 * v.x - 1.0;
+            v.y = 2.0 * (v.y - min) / (max - min) - 1.0;
+        }
     }
 
     while (!glfwWindowShouldClose(m_window)) {
@@ -39,7 +47,7 @@ void Application::run() {
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 50; i++)
             renderer.drawPolyline(polylines[i]);
 
         glfwSwapBuffers(m_window);

@@ -11,6 +11,14 @@ double Functions::computeST(double S, double r, double q, double sigma, double T
     return S * std::exp(T * (r - q - sigma * sigma / 2) + sigma * std::sqrt(T) * Z);
 }
 
+double Functions::computeSTI(double r, double q, double sigma, double T, double Z) {
+    return std::exp(T * (r - q - sigma * sigma / 2) + sigma * std::sqrt(T) * Z);
+}
+
+double Functions::computeSTI(double drift, double vol, double Z) {
+    return std::exp(drift + vol * Z);
+}
+
 double Functions::computeCall(double K, double r, double T, double ST) {
     return std::exp(-r * T) * std::max(ST - K, 0.0);
 }

@@ -9,6 +9,8 @@ public:
     Functions();
 
     double computeST(double S, double r, double q, double sigma, double T, double Z);
+    double computeSTI(double r, double q, double sigma, double T, double Z); // Incremental version of computeST
+    double computeSTI(double drift, double vol, double Z);
     double computeCall(double K, double r, double T, double ST);
 
     double generateStandardNormal();

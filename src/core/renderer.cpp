@@ -72,7 +72,7 @@ void Renderer::drawPolyline(const Polyline& polyline)
 
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2<float>) * count, polyline.vertices(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2<float>) * count, polyline.vertices().data(), GL_DYNAMIC_DRAW);
 
     glUseProgram(m_shader);
     glUniform4f(m_colorLocation, polyline.color().r, polyline.color().g, polyline.color().b, polyline.color().a);
