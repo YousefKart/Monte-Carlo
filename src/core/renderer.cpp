@@ -1,6 +1,49 @@
 #include "renderer.h"
 #include <glad/glad.h>
 #include <cassert>
+#include <cmath>
+#include <iomanip>
+#include <sstream>
+
+namespace {
+std::string formatTickValue(double value, double step) {
+    if (std::abs(value) < 1e-9) {
+        value = 0.0;
+    }
+
+    int precision = 0;
+    const double absStep = std::abs(step);
+    if (absStep < 1.0) {
+        if (absStep >= 0.1) {
+            precision = 1;
+        } else if (absStep >= 0.01) {
+            precision = 2;
+        } else {
+            precision = 3;
+        }
+    }
+
+    std::ostringstream out;
+    out << std::fixed << std::setprecision(precision) << value;
+    std::string result = out.str();
+
+    if (precision > 0) {
+        while (!result.empty() && result.back() == '0') {
+            result.pop_back();
+        }
+        if (!result.empty() && result.back() == '.') {
+            result.pop_back();
+        }
+    }
+
+    return result;
+}
+
+float estimateTextWidthNdc(const std::string& text, float scale) {
+    constexpr float avgGlyphAdvancePx = 9.0f;
+    return static_cast<float>(text.size()) * avgGlyphAdvancePx * scale;
+}
+}
 
 static const char* vertexSrc = R"(
 #version 330 core
@@ -46,6 +89,8 @@ Renderer::Renderer() {
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    text.loadFont("../fonts/Roboto-Regular.ttf", 16);
 }
 
 Renderer::~Renderer() {
@@ -116,7 +161,7 @@ void Renderer::drawAxis(const Graph& graph) {
     float y2 = graph.height();
     const Vec4<float> axisColor = graph.axisColor();
 
-    Line horizontal(x1, 0.0f, x2, 0.0f);
+    Line horizontal(x1, y1, x2, y1);
     horizontal.setColor(axisColor);
     drawLine(horizontal);
 
@@ -151,20 +196,52 @@ void Renderer::drawTicks(const Graph& graph) {
 }
 
 void Renderer::drawAxisValues(const Graph& graph) {
-        float x1 = -graph.width();
-    float x2 = graph.width();
+    float x1 = -graph.width();
     float y1 = -graph.height();
+    float x2 = graph.width();
     float y2 = graph.height();
-    const Vec4<float> axisColor = graph.axisColor();
+
+    const int res = graph.gridResolution();
+    if (res <= 0) {
+        return;
+    }
+
+    const double valueRange = graph.maxValue() - graph.minValue();
+    const double xRange = x2 - x1;
+    const double yRange = y2 - y1;
+
+    const float labelScale = 0.0025f;
+    const float tickLength = 0.025f;
+    const float xLabelGap = 0.05f;
+    const float yLabelGap = 0.0f;
+    const double stepValue = valueRange / static_cast<double>(res);
 
     float xStep = x1;
     float yStep = y1;
-    int res = graph.gridResolution();
 
     for (int i = 0; i < res; i++) {
         xStep += 2 * graph.width() / res;
         yStep += 2 * graph.height() / res;
 
-        
+        Vec4<float> color = graph.axisColor();
+        glm::vec3 colorVec3(color.r, color.g, color.b);
+
+        const double xValue = ((xStep - x1) / xRange) * valueRange + graph.minValue();
+        const double yValue = ((yStep - y1) / yRange) * valueRange + graph.minValue();
+
+        const std::string xLabel = formatTickValue(xValue, stepValue);
+        const std::string yLabel = formatTickValue(yValue, stepValue);
+
+        const float xLabelWidth = estimateTextWidthNdc(xLabel, labelScale);
+        const float yLabelWidth = estimateTextWidthNdc(yLabel, labelScale);
+
+        const float xLabelX = xStep - (xLabelWidth * 0.5f);
+        const float xLabelY = y1 - tickLength - xLabelGap;
+
+        const float yLabelX = x1 - tickLength - yLabelGap - yLabelWidth;
+        const float yLabelY = yStep - 0.01f;
+
+        text.renderText(xLabel, xLabelX, xLabelY, labelScale, colorVec3);
+        text.renderText(yLabel, yLabelX, yLabelY, labelScale, colorVec3);
     }
 }
