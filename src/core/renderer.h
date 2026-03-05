@@ -18,6 +18,7 @@ public:
     void drawAxis(const Graph& graph);
     void drawTicks(const Graph& graph);
     void drawAxisValues(const Graph& graph);
+    void drawAxisLabels(const Graph& graph);
 
 private:
     Text text{960, 640};

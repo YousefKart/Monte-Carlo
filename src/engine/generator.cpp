@@ -3,7 +3,7 @@
 Generator::Generator() :
     m_functions(),
     m_xScale(1.0), m_yScale(1.0),
-    S(0.5), K(1.0), r(0.05), q(0.02), sigma(0.1), T(1.0), Z(0.5)
+    S(50.0), K(50.0), r(0.05), q(0.02), sigma(0.1), T(1.0), Z(0.5)
 {}
 
 Polyline Generator::generatePolyline() {

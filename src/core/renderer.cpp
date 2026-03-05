@@ -39,6 +39,24 @@ std::string formatTickValue(double value, double step) {
     return result;
 }
 
+std::string formatTimeValue(double value, int resolution) {
+    if (std::abs(value) < 1e-9) {
+        value = 0.0;
+    }
+
+    int precision = 1;
+    if (resolution > 10) {
+        precision = 2;
+    }
+    if (resolution > 100) {
+        precision = 3;
+    }
+
+    std::ostringstream out;
+    out << std::fixed << std::setprecision(precision) << value;
+    return out.str();
+}
+
 float estimateTextWidthNdc(const std::string& text, float scale) {
     constexpr float avgGlyphAdvancePx = 9.0f;
     return static_cast<float>(text.size()) * avgGlyphAdvancePx * scale;
@@ -126,6 +144,7 @@ void Renderer::drawGraph(const Graph& graph) {
     drawAxis(graph);
     drawTicks(graph);
     drawAxisValues(graph);
+    drawAxisLabels(graph);
 }
 
 void Renderer::drawGrid(const Graph& graph) {
@@ -212,9 +231,17 @@ void Renderer::drawAxisValues(const Graph& graph) {
 
     const float labelScale = 0.0025f;
     const float tickLength = 0.025f;
-    const float xLabelGap = 0.05f;
-    const float yLabelGap = 0.0f;
-    const double stepValue = valueRange / static_cast<double>(res);
+    const float xLabelGap = 0.04f;
+    const float yLabelGap = 0.01f;
+    const double yStepValue = valueRange / static_cast<double>(res);
+    const float xLabelY = y1 - tickLength - xLabelGap;
+
+    Vec4<float> color = graph.axisColor();
+    glm::vec3 colorVec3(color.r, color.g, color.b);
+
+    const std::string xStartLabel = formatTimeValue(0.0, res);
+    const float xStartLabelWidth = estimateTextWidthNdc(xStartLabel, labelScale);
+    text.renderText(xStartLabel, x1 - (xStartLabelWidth * 0.5f), xLabelY, labelScale, colorVec3);
 
     float xStep = x1;
     float yStep = y1;
@@ -223,20 +250,16 @@ void Renderer::drawAxisValues(const Graph& graph) {
         xStep += 2 * graph.width() / res;
         yStep += 2 * graph.height() / res;
 
-        Vec4<float> color = graph.axisColor();
-        glm::vec3 colorVec3(color.r, color.g, color.b);
-
-        const double xValue = ((xStep - x1) / xRange) * valueRange + graph.minValue();
+        const double xValue = (xStep - x1) / xRange;
         const double yValue = ((yStep - y1) / yRange) * valueRange + graph.minValue();
 
-        const std::string xLabel = formatTickValue(xValue, stepValue);
-        const std::string yLabel = formatTickValue(yValue, stepValue);
+        const std::string xLabel = formatTimeValue(xValue, res);
+        const std::string yLabel = formatTickValue(yValue, yStepValue);
 
         const float xLabelWidth = estimateTextWidthNdc(xLabel, labelScale);
         const float yLabelWidth = estimateTextWidthNdc(yLabel, labelScale);
 
         const float xLabelX = xStep - (xLabelWidth * 0.5f);
-        const float xLabelY = y1 - tickLength - xLabelGap;
 
         const float yLabelX = x1 - tickLength - yLabelGap - yLabelWidth;
         const float yLabelY = yStep - 0.01f;
@@ -244,4 +267,27 @@ void Renderer::drawAxisValues(const Graph& graph) {
         text.renderText(xLabel, xLabelX, xLabelY, labelScale, colorVec3);
         text.renderText(yLabel, yLabelX, yLabelY, labelScale, colorVec3);
     }
+}
+
+void Renderer::drawAxisLabels(const Graph& graph) {
+    const float x1 = -graph.width();
+    const float y1 = -graph.height();
+    const float x2 = graph.width();
+    const float y2 = graph.height();
+
+    const float titleScale = 0.0032f;
+    const Vec4<float> color = graph.axisColor();
+    const glm::vec3 colorVec3(color.r, color.g, color.b);
+
+    const std::string xAxisLabel = "Time (years)";
+    const float xAxisWidth = estimateTextWidthNdc(xAxisLabel, titleScale);
+    const float xAxisX = ((x1 + x2) * 0.5f) - (xAxisWidth * 0.5f);
+    const float xAxisY = y1 - 0.15f;
+
+    const std::string yAxisLabel = "Stock price";
+    const float yAxisX = x1 + 0.02f;
+    const float yAxisY = y2 + 0.03f;
+
+    text.renderText(xAxisLabel, xAxisX, xAxisY, titleScale, colorVec3);
+    text.renderText(yAxisLabel, yAxisX, yAxisY, titleScale, colorVec3);
 }
