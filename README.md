@@ -11,35 +11,17 @@ This project is currently under active development. Features, structure, and doc
 ### Requirements
 
 - CMake ≥ 3.20
-- C++20 compatible compiler
-- Git
+- C++20
 
-### Clone the repository
-
-```bash
-git clone https://github.com/YousefKart/Monte-Carlo.git
-cd Monte-Carlo
-```
-
-### Configure
+### Build & Run
 
 ```bash
 cmake -B build
-```
-
-### Build
-
-```bash
 cmake --build build --config Debug
-```
-
-### Run
-
-```bash
 ./build/Debug/MonteCarlo
 ```
 
-Alternatively, if using the provided CMake run target:
+Alternatively,
 
 ```bash
 cmake --build build --target run
