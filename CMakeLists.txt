@@ -11,6 +11,7 @@ add_executable(MonteCarlo
 
     src/core/application.cpp
     src/core/renderer.cpp
+    src/core/text.cpp
 
     src/engine/functions.cpp
     src/engine/generator.cpp
@@ -43,9 +44,17 @@ add_subdirectory(external/glfw-3.4)
 # OpenGL
 find_package(OpenGL REQUIRED)
 
+# FreeType
+add_subdirectory(external/freetype-2.14.2)
+target_include_directories(MonteCarlo PRIVATE
+    external/glm
+    external/freetype-2.14.2/include
+)
+
 target_link_libraries(MonteCarlo PRIVATE
     glad
     glfw
+    freetype
     OpenGL::GL
 )
 

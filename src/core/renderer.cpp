@@ -151,5 +151,20 @@ void Renderer::drawTicks(const Graph& graph) {
 }
 
 void Renderer::drawAxisValues(const Graph& graph) {
-    
+        float x1 = -graph.width();
+    float x2 = graph.width();
+    float y1 = -graph.height();
+    float y2 = graph.height();
+    const Vec4<float> axisColor = graph.axisColor();
+
+    float xStep = x1;
+    float yStep = y1;
+    int res = graph.gridResolution();
+
+    for (int i = 0; i < res; i++) {
+        xStep += 2 * graph.width() / res;
+        yStep += 2 * graph.height() / res;
+
+        
+    }
 }
