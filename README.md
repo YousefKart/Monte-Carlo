@@ -2,7 +2,7 @@
 
 🚧 **Work in Progress**
 
-This project is currently under active development. Features, structure, and documentation may change frequently as the engine evolves.
+This project is currently under active development.
 
 ---
 
@@ -10,7 +10,7 @@ This project is currently under active development. Features, structure, and doc
 
 ### Requirements
 
-- CMake ≥ 3.20
+- CMake 3.20
 - C++20
 
 ### Build & Run
