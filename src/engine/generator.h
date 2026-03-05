@@ -11,9 +11,13 @@ public:
     Polyline generatePolyline();
     double generateMin();
     double generateMax();
+    void scale(double xScale, double yScale) { m_xScale = xScale; m_yScale = yScale; }
 
 private:
     Functions m_functions;
+
+    double m_xScale;
+    double m_yScale;
 
     double S;        // Stock price
     double K;        // Strike price

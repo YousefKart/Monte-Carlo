@@ -27,8 +27,10 @@ void Application::run() {
 
     Renderer renderer;
     Generator generator;
+    Graph graph;
     Polyline polylines[50];
 
+    generator.scale(graph.width(), graph.height());
     float min = generator.generateMin();
     float max = generator.generateMax();
     
@@ -37,8 +39,8 @@ void Application::run() {
         polylines[i].setColor(Vec4(0.01f * i, 0.025f * i, 0.5f, 0.6f));
         
         for (auto& v : polylines[i].vertices()) {
-            v.x = 2.0 * v.x - 1.0;
-            v.y = 2.0 * (v.y - min) / (max - min) - 1.0;
+            v.x = 2.0 * v.x - graph.width();
+            v.y = (v.y - min) / (max - min) - graph.height();
         }
     }
 
@@ -46,6 +48,8 @@ void Application::run() {
 
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        renderer.drawGraph(graph);
 
         for (int i = 0; i < 50; i++)
             renderer.drawPolyline(polylines[i]);

@@ -3,6 +3,7 @@
 
 #include "../gui/primitives/line.h"
 #include "../gui/primitives/polyline.h"
+#include "../gui/components/graph.h"
 
 class Renderer {
 public:
@@ -11,6 +12,9 @@ public:
 
     void drawLine(const Line& line);
     void drawPolyline(const Polyline& Polyline);
+    void drawGraph(const Graph& graph);
+    void drawGrid(const Graph& graph);
+    void drawAxis(const Graph& graph);
 
 private:
     unsigned int m_VAO;

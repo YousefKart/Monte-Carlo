@@ -2,8 +2,8 @@
 #define POLYLINE_H
 
 #include <vector>
-#include "vec2.h"
-#include "vec4.h"
+#include "../../engine/vec2.h"
+#include "../../engine/vec4.h"
 
 class Polyline {
 public:

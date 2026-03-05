@@ -17,6 +17,7 @@ add_executable(MonteCarlo
     
     src/gui/primitives/line.cpp
     src/gui/primitives/polyline.cpp
+    src/gui/components/graph.cpp
 )
 
 target_include_directories(MonteCarlo PRIVATE
