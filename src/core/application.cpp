@@ -11,12 +11,15 @@ Application::Application(int width, int height, const char* title)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+    
     m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
     glfwMakeContextCurrent(m_window);
-
+    
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glViewport(0, 0, width, height);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Application::~Application() {
@@ -42,7 +45,12 @@ void Application::run() {
 
     for (int i = 0; i < 50; i++) {
         polylines[i] = generator.generatePolyline();
-        polylines[i].setColor(Vec4(0.01f * i, 0.025f * i, 0.5f, 0.1f));
+        polylines[i].setColor(Vec4(
+            static_cast<float>(rand()) / RAND_MAX,
+            static_cast<float>(rand()) / RAND_MAX,
+            static_cast<float>(rand()) / RAND_MAX,
+            0.25f
+        ));
         
         for (auto& v : polylines[i].vertices()) {
             yNormalized = (yRange != 0.0f) ? (v.y - min) / yRange : 0.5f;
