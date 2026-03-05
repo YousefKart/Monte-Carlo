@@ -114,7 +114,7 @@ void Renderer::drawAxis(const Graph& graph) {
     float y2 = graph.height();
     const Vec4<float> axisColor = graph.axisColor();
 
-    Line horizontal(x1, y1, x2, y1);
+    Line horizontal(x1, 0.0f, x2, 0.0f);
     horizontal.setColor(axisColor);
     drawLine(horizontal);
 

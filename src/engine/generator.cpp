@@ -15,7 +15,7 @@ Polyline Generator::generatePolyline() {
     const double vol = sigma * std::sqrt(delta_T);
     double temp_S = S;
     
-    polyline.addPoint(0.0, S);
+    polyline.addPoint(0.0, S * m_yScale);
 
     for (int i = 1; i <= SAMPLES; ++i) {
         Z = m_functions.generateStandardNormal();
@@ -27,9 +27,9 @@ Polyline Generator::generatePolyline() {
 }
 
 double Generator::generateMin() {
-    return m_functions.computeST(S, r, q, -3 * sigma, T, Z);
+    return m_functions.computeST(S, r, q, -3 * sigma, T, Z) * m_yScale;
 }
 
 double Generator::generateMax() {
-    return m_functions.computeST(S, r, q, 3 * sigma, T, Z);
+    return m_functions.computeST(S, r, q, 3 * sigma, T, Z) * m_yScale;
 }

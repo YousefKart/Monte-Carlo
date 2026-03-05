@@ -34,13 +34,17 @@ void Application::run() {
     float min = generator.generateMin();
     float max = generator.generateMax();
     
+    float yRange = max - min;
+    float yNormalized = 0.0f;
+
     for (int i = 0; i < 50; i++) {
         polylines[i] = generator.generatePolyline();
-        polylines[i].setColor(Vec4(0.01f * i, 0.025f * i, 0.5f, 0.6f));
+        polylines[i].setColor(Vec4(0.01f * i, 0.025f * i, 0.5f, 0.1f));
         
         for (auto& v : polylines[i].vertices()) {
+            yNormalized = (yRange != 0.0f) ? (v.y - min) / yRange : 0.5f;
             v.x = 2.0 * v.x - graph.width();
-            v.y = (v.y - min) / (max - min) - graph.height();
+            v.y = 2.0f * graph.height() * yNormalized - graph.height();
         }
     }
 
