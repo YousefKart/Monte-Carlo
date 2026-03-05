@@ -15,6 +15,8 @@ public:
     void drawGraph(const Graph& graph);
     void drawGrid(const Graph& graph);
     void drawAxis(const Graph& graph);
+    void drawTicks(const Graph& graph);
+    void drawAxisValues(const Graph& graph);
 
 private:
     unsigned int m_VAO;

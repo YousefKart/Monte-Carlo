@@ -33,6 +33,9 @@ void Application::run() {
     generator.scale(graph.width(), graph.height());
     float min = generator.generateMin();
     float max = generator.generateMax();
+
+    graph.setMinValue(min);
+    graph.setMaxValue(max);
     
     float yRange = max - min;
     float yNormalized = 0.0f;

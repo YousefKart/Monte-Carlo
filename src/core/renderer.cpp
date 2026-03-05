@@ -79,6 +79,8 @@ void Renderer::drawPolyline(const Polyline& polyline) {
 void Renderer::drawGraph(const Graph& graph) {
     drawGrid(graph);
     drawAxis(graph);
+    drawTicks(graph);
+    drawAxisValues(graph);
 }
 
 void Renderer::drawGrid(const Graph& graph) {
@@ -121,4 +123,33 @@ void Renderer::drawAxis(const Graph& graph) {
     Line vertical(x1, y1, x1, y2);
     vertical.setColor(axisColor);
     drawLine(vertical);
+}
+
+void Renderer::drawTicks(const Graph& graph) {
+    float x1 = -graph.width();
+    float x2 = graph.width();
+    float y1 = -graph.height();
+    float y2 = graph.height();
+    const Vec4<float> axisColor = graph.axisColor();
+
+    float xStep = x1;
+    float yStep = y1;
+    int res = graph.gridResolution();
+
+    for (int i = 0; i < res; i++) {
+        xStep += 2 * graph.width() / res;
+        yStep += 2 * graph.height() / res;
+
+        Line horizontal(xStep, y1-0.025f, xStep, y1);
+        horizontal.setColor(axisColor);
+        drawLine(horizontal);
+
+        Line vertical(x1-0.025f, yStep, x1, yStep);
+        vertical.setColor(axisColor);
+        drawLine(vertical);
+    }
+}
+
+void Renderer::drawAxisValues(const Graph& graph) {
+    
 }
