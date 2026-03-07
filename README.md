@@ -4,6 +4,8 @@
 
 This project is currently under active development.
 
+<img width="1282" height="752" alt="image" src="https://github.com/user-attachments/assets/9feb375c-1865-4700-9f89-bff101307ec1" />
+
 ---
 
 ## Build Instructions
