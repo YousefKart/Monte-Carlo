@@ -1,5 +1,6 @@
 #include "text.h"
 #include <iostream>
+#include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 
 Text::Text(int width, int height)
@@ -87,7 +88,8 @@ void Text::renderText(
     float x,
     float y,
     float scale,
-    glm::vec3 color)
+    glm::vec3 color,
+    float angleRadians)
 {
     glUseProgram(shaderProgram);
 
@@ -99,25 +101,39 @@ void Text::renderText(
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 
+    const float cosA = std::cos(angleRadians);
+    const float sinA = std::sin(angleRadians);
+
+    float cursor = 0.0f;
     for (auto c : text)
     {
         Character ch = characters[c];
 
-        float xpos = x + ch.Bearing.x * scale;
-        float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+        // glyph quad corners in local (unrotated) space, relative to text origin
+        float lx = cursor + ch.Bearing.x * scale;
+        float ly = -(ch.Size.y - ch.Bearing.y) * scale;
+        float w  = ch.Size.x * scale;
+        float h  = ch.Size.y * scale;
 
-        float w = ch.Size.x * scale;
-        float h = ch.Size.y * scale;
+        // rotate each corner around the text origin (x, y)
+        float p0x = x + lx       * cosA - (ly + h) * sinA;
+        float p0y = y + lx       * sinA + (ly + h) * cosA;
+        float p1x = x + lx       * cosA - ly       * sinA;
+        float p1y = y + lx       * sinA + ly       * cosA;
+        float p2x = x + (lx + w) * cosA - ly       * sinA;
+        float p2y = y + (lx + w) * sinA + ly       * cosA;
+        float p3x = x + (lx + w) * cosA - (ly + h) * sinA;
+        float p3y = y + (lx + w) * sinA + (ly + h) * cosA;
 
         float vertices[6][4] =
         {
-            { xpos,     ypos + h,   0.0f, 0.0f },
-            { xpos,     ypos,       0.0f, 1.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
+            { p0x, p0y, 0.0f, 0.0f },
+            { p1x, p1y, 0.0f, 1.0f },
+            { p2x, p2y, 1.0f, 1.0f },
 
-            { xpos,     ypos + h,   0.0f, 0.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
-            { xpos + w, ypos + h,   1.0f, 0.0f }
+            { p0x, p0y, 0.0f, 0.0f },
+            { p2x, p2y, 1.0f, 1.0f },
+            { p3x, p3y, 1.0f, 0.0f }
         };
 
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
@@ -127,7 +143,7 @@ void Text::renderText(
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        x += (ch.Advance >> 6) * scale;
+        cursor += (ch.Advance >> 6) * scale;
     }
 
     glBindVertexArray(0);

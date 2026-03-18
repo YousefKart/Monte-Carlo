@@ -30,7 +30,8 @@ public:
         float x,
         float y,
         float scale,
-        glm::vec3 color
+        glm::vec3 color,
+        float angleRadians = 0.0f
     );
 
 private:

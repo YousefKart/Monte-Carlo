@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iomanip>
 #include <sstream>
+#include <numbers>
 
 namespace {
 std::string formatTickValue(double value, double step) {
@@ -285,9 +286,10 @@ void Renderer::drawAxisLabels(const Graph& graph) {
     const float xAxisY = y1 - 0.15f;
 
     const std::string yAxisLabel = "Stock price";
-    const float yAxisX = x1 + 0.02f;
-    const float yAxisY = y2 + 0.03f;
+    const float yAxisLabelWidth = estimateTextWidthNdc(yAxisLabel, titleScale);
+    const float yAxisX = x1 - 0.10f;
+    const float yAxisY = (y1 + y2) * 0.5f - yAxisLabelWidth * 0.5f;
 
     text.renderText(xAxisLabel, xAxisX, xAxisY, titleScale, colorVec3);
-    text.renderText(yAxisLabel, yAxisX, yAxisY, titleScale, colorVec3);
+    text.renderText(yAxisLabel, yAxisX, yAxisY, titleScale, colorVec3, std::numbers::pi_v<float> / 2.0f);
 }
