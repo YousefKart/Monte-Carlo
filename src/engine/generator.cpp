@@ -3,7 +3,7 @@
 Generator::Generator() :
     m_functions(),
     m_xScale(1.0), m_yScale(1.0),
-    S(50.0), K(50.0), r(0.05), q(0.02), sigma(0.1), T(1.0), Z(0.5)
+    S(50.0f), K(50.0f), r(0.05f), q(0.02f), sigma(0.1f), T(1.0f), Z(0.5)
 {}
 
 Polyline Generator::generatePolyline() {
@@ -20,7 +20,7 @@ Polyline Generator::generatePolyline() {
     for (int i = 1; i <= SAMPLES; ++i) {
         Z = m_functions.generateStandardNormal();
         temp_S *= m_functions.computeSTI(drift, vol, Z);
-        polyline.addPoint(i * delta_T * m_xScale, temp_S * m_yScale); // TODO: Fix Scale
+        polyline.addPoint(i * delta_T * m_xScale, temp_S * m_yScale);
     }
 
     return polyline;

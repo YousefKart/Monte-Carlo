@@ -1,5 +1,8 @@
 #include <glad/glad.h>
 #include <algorithm>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include "application.h"
 #include "renderer.h"
 #include "../engine/generator.h"
@@ -70,10 +73,19 @@ Application::Application(int width, int height, const char* title)
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+    ImGui_ImplOpenGL3_Init("#version 330 core");
 }
 
 Application::~Application() {
     if (m_window != nullptr) {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
         glfwDestroyWindow(m_window);
     }
     glfwTerminate();
@@ -87,43 +99,66 @@ void Application::run() {
     Renderer renderer;
     Generator generator;
     Graph graph;
-    Polyline polylines[50];
 
-    generator.scale(graph.width(), graph.height());
-    float min = generator.generateMin();
-    float max = generator.generateMax();
+    constexpr int NUM_PATHS = 50;
+    Polyline polylines[NUM_PATHS];
 
-    graph.setMinValue(min);
-    graph.setMaxValue(max);
-    
-    float yRange = max - min;
-    float yNormalized = 0.0f;
+    auto regenerate = [&]() {
+        generator.scale(graph.width(), graph.height());
+        float min = static_cast<float>(generator.generateMin());
+        float max = static_cast<float>(generator.generateMax());
+        graph.setMinValue(min);
+        graph.setMaxValue(max);
 
-    for (int i = 0; i < 50; i++) {
-        polylines[i] = generator.generatePolyline();
-        polylines[i].setColor(Vec4(
-            static_cast<float>(rand()) / RAND_MAX,
-            static_cast<float>(rand()) / RAND_MAX,
-            static_cast<float>(rand()) / RAND_MAX,
-            0.25f
-        ));
-        
-        for (auto& v : polylines[i].vertices()) {
-            yNormalized = (yRange != 0.0f) ? (v.y - min) / yRange : 0.5f;
-            v.x = 2.0 * v.x - graph.width();
-            v.y = 2.0f * graph.height() * yNormalized - graph.height();
+        const float yRange = max - min;
+        for (int i = 0; i < NUM_PATHS; i++) {
+            polylines[i] = generator.generatePolyline();
+            polylines[i].setColor(Vec4(
+                static_cast<float>(rand()) / RAND_MAX,
+                static_cast<float>(rand()) / RAND_MAX,
+                static_cast<float>(rand()) / RAND_MAX,
+                0.25f
+            ));
+            for (auto& v : polylines[i].vertices()) {
+                const float yNormalized = (yRange != 0.0f) ? (v.y - min) / yRange : 0.5f;
+                v.x = 2.0f * v.x - static_cast<float>(graph.width());
+                v.y = 2.0f * static_cast<float>(graph.height()) * yNormalized - static_cast<float>(graph.height());
+            }
         }
-    }
+    };
+
+    regenerate();
 
     while (!glfwWindowShouldClose(m_window)) {
-
-        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        
-        renderer.drawGraph(graph);
 
-        for (int i = 0; i < 50; i++)
+        renderer.drawGraph(graph);
+        for (int i = 0; i < NUM_PATHS; i++)
             renderer.drawPolyline(polylines[i]);
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(280.0f, 220.0f), ImGuiCond_Once);
+        ImGui::Begin("Generator Parameters");
+
+        bool changed = false;
+        changed |= ImGui::SliderFloat("Stock Price (S)", &generator.S_ref(), 1.0f, 500.0f);
+        changed |= ImGui::SliderFloat("Strike (K)", &generator.K_ref(), 1.0f, 500.0f);
+        changed |= ImGui::SliderFloat("Risk-free (r)", &generator.r_ref(), 0.0f, 0.5f);
+        changed |= ImGui::SliderFloat("Div. Yield (q)", &generator.q_ref(), 0.0f, 0.5f);
+        changed |= ImGui::SliderFloat("Volatility (sigma)", &generator.sigma_ref(), 0.01f, 1.0f);
+        changed |= ImGui::SliderFloat("Time (T)", &generator.T_ref(), 0.01f, 10.0f);
+
+        if (ImGui::Button("Regenerate") || changed)
+            regenerate();
+
+        ImGui::End();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(m_window);
         glfwPollEvents();
