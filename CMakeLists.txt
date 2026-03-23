@@ -44,6 +44,21 @@ add_subdirectory(external/glfw-3.4)
 # OpenGL
 find_package(OpenGL REQUIRED)
 
+# Dear ImGui
+add_library(imgui STATIC
+    external/imgui/imgui.cpp
+    external/imgui/imgui_draw.cpp
+    external/imgui/imgui_tables.cpp
+    external/imgui/imgui_widgets.cpp
+    external/imgui/backends/imgui_impl_glfw.cpp
+    external/imgui/backends/imgui_impl_opengl3.cpp
+)
+target_include_directories(imgui PUBLIC
+    external/imgui
+    external/imgui/backends
+)
+target_link_libraries(imgui PUBLIC glfw OpenGL::GL)
+
 # FreeType
 add_subdirectory(external/freetype-2.14.2)
 target_include_directories(MonteCarlo PRIVATE
@@ -55,6 +70,7 @@ target_link_libraries(MonteCarlo PRIVATE
     glad
     glfw
     freetype
+    imgui
     OpenGL::GL
 )
 
