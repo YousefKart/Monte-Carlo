@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <algorithm>
+#include <limits>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -105,12 +106,7 @@ void Application::run() {
 
     auto regenerate = [&]() {
         generator.scale(graph.width(), graph.height());
-        float min = static_cast<float>(generator.generateMin());
-        float max = static_cast<float>(generator.generateMax());
-        graph.setMinValue(min);
-        graph.setMaxValue(max);
 
-        const float yRange = max - min;
         for (int i = 0; i < NUM_PATHS; i++) {
             polylines[i] = generator.generatePolyline();
             polylines[i].setColor(Vec4(
@@ -119,6 +115,21 @@ void Application::run() {
                 static_cast<float>(rand()) / RAND_MAX,
                 0.25f
             ));
+        }
+
+        float min = std::numeric_limits<float>::max();
+        float max = std::numeric_limits<float>::lowest();
+        for (int i = 0; i < NUM_PATHS; i++) {
+            for (const auto& v : polylines[i].vertices()) {
+                if (v.y < min) min = v.y;
+                if (v.y > max) max = v.y;
+            }
+        }
+        graph.setMinValue(min);
+        graph.setMaxValue(max);
+
+        const float yRange = max - min;
+        for (int i = 0; i < NUM_PATHS; i++) {
             for (auto& v : polylines[i].vertices()) {
                 const float yNormalized = (yRange != 0.0f) ? (v.y - min) / yRange : 0.5f;
                 v.x = 2.0f * v.x - static_cast<float>(graph.width());
