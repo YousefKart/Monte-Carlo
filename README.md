@@ -2,7 +2,7 @@
 
 🚧 **Project is a Work in Progress**
 
-<img width="1282" height="752" alt="image" src="https://github.com/user-attachments/assets/9feb375c-1865-4700-9f89-bff101307ec1" />
+<img width="1250" height="854" alt="image" src="https://github.com/user-attachments/assets/1f53ec39-c070-4eae-bee9-5c574d5cde14" />
 
 ---
 
