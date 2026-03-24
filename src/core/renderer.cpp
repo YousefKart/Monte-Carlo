@@ -251,7 +251,7 @@ void Renderer::drawAxisValues(const Graph& graph) {
         xStep += 2 * graph.width() / res;
         yStep += 2 * graph.height() / res;
 
-        const double xValue = (xStep - x1) / xRange;
+        const double xValue = ((xStep - x1) / xRange) * graph.maxTime();
         const double yValue = ((yStep - y1) / yRange) * valueRange + graph.minValue();
 
         const std::string xLabel = formatTimeValue(xValue, res);

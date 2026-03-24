@@ -130,12 +130,13 @@ void Application::run() {
         }
         graph.setMinValue(min);
         graph.setMaxValue(max);
+        graph.setMaxTime(generator.T_ref());
 
         const float yRange = max - min;
         for (int i = 0; i < numPaths; i++) {
             for (auto& v : polylines[i].vertices()) {
                 const float yNormalized = (yRange != 0.0f) ? (v.y - min) / yRange : 0.5f;
-                v.x = 2.0f * v.x - static_cast<float>(graph.width());
+                v.x = 2.0f * v.x / static_cast<float>(generator.T_ref()) - static_cast<float>(graph.width());
                 v.y = 2.0f * static_cast<float>(graph.height()) * yNormalized - static_cast<float>(graph.height());
             }
         }
