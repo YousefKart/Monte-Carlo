@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <algorithm>
 #include <limits>
+#include <vector>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -101,25 +102,27 @@ void Application::run() {
     Generator generator;
     Graph graph;
 
-    constexpr int NUM_PATHS = 50;
-    Polyline polylines[NUM_PATHS];
+    int numPaths = 50;
+    float pathOpacity = 0.35f;
+    std::vector<Polyline> polylines(numPaths);
 
     auto regenerate = [&]() {
         generator.scale(graph.width(), graph.height());
+        polylines.resize(numPaths);
 
-        for (int i = 0; i < NUM_PATHS; i++) {
+        for (int i = 0; i < numPaths; i++) {
             polylines[i] = generator.generatePolyline();
             polylines[i].setColor(Vec4(
                 static_cast<float>(rand()) / RAND_MAX,
                 static_cast<float>(rand()) / RAND_MAX,
                 static_cast<float>(rand()) / RAND_MAX,
-                0.25f
+                pathOpacity
             ));
         }
 
         float min = std::numeric_limits<float>::max();
         float max = std::numeric_limits<float>::lowest();
-        for (int i = 0; i < NUM_PATHS; i++) {
+        for (int i = 0; i < numPaths; i++) {
             for (const auto& v : polylines[i].vertices()) {
                 if (v.y < min) min = v.y;
                 if (v.y > max) max = v.y;
@@ -129,7 +132,7 @@ void Application::run() {
         graph.setMaxValue(max);
 
         const float yRange = max - min;
-        for (int i = 0; i < NUM_PATHS; i++) {
+        for (int i = 0; i < numPaths; i++) {
             for (auto& v : polylines[i].vertices()) {
                 const float yNormalized = (yRange != 0.0f) ? (v.y - min) / yRange : 0.5f;
                 v.x = 2.0f * v.x - static_cast<float>(graph.width());
@@ -145,7 +148,7 @@ void Application::run() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         renderer.drawGraph(graph);
-        for (int i = 0; i < NUM_PATHS; i++)
+        for (int i = 0; i < numPaths; i++)
             renderer.drawPolyline(polylines[i]);
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -153,18 +156,21 @@ void Application::run() {
         ImGui::NewFrame();
 
         ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Once);
-        ImGui::SetNextWindowSize(ImVec2(280.0f, 220.0f), ImGuiCond_Once);
+        ImGui::SetNextWindowSize(ImVec2(480.0f, 220.0f), ImGuiCond_Once);
         ImGui::Begin("Generator Parameters");
 
         bool changed = false;
         changed |= ImGui::SliderFloat("Stock Price (S)", &generator.S_ref(), 1.0f, 500.0f);
-        changed |= ImGui::SliderFloat("Strike (K)", &generator.K_ref(), 1.0f, 500.0f);
+        //changed |= ImGui::SliderFloat("Strike (K)", &generator.K_ref(), 1.0f, 500.0f);
         changed |= ImGui::SliderFloat("Risk-free (r)", &generator.r_ref(), 0.0f, 0.5f);
         changed |= ImGui::SliderFloat("Div. Yield (q)", &generator.q_ref(), 0.0f, 0.5f);
         changed |= ImGui::SliderFloat("Volatility (sigma)", &generator.sigma_ref(), 0.01f, 1.0f);
         changed |= ImGui::SliderFloat("Time (T)", &generator.T_ref(), 0.01f, 10.0f);
 
-        if (ImGui::Button("Regenerate") || changed)
+        ImGui::Spacing();
+        changed |= ImGui::SliderInt("Num. Paths", &numPaths, 1, 200);
+        changed |= ImGui::SliderFloat("Opacity", &pathOpacity, 0.0f, 1.0f);
+        if (ImGui::Button("Regenerate", ImVec2(-1, 0)) || changed)
             regenerate();
 
         ImGui::End();
