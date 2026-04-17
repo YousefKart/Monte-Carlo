@@ -1,7 +1,5 @@
 # Monte Carlo Engine
 
-🚧 **Project is a Work in Progress**
-
 <img width="1250" height="854" alt="image" src="https://github.com/user-attachments/assets/1f53ec39-c070-4eae-bee9-5c574d5cde14" />
 
 ---
